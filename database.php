@@ -35,16 +35,11 @@
         public function delete($table,$id){
             $sql="DELETE FROM $table";
             $sql .=" WHERE $id ";
-            $sql;
             return $this->mysqli->query($sql);
         }
 
-        public function select($table,$rows="*",$where = null){
-            if ($where != null) {
-                $sql="SELECT $rows FROM $table WHERE $where";
-            }else{
-                $sql="SELECT $rows FROM $table";
-            }
+        public function select($table){
+            $sql="SELECT * FROM $table";
             return $this->mysqli->query($sql);
         }
 
