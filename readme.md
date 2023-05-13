@@ -7,8 +7,7 @@ Body -> raw -> JSON
 {
     "name":"Bandage",
     "price":67.76,
-    "backup":true,
-    "depot":2
+    "backup":true
 }
 
 Update article
@@ -19,8 +18,7 @@ Body -> raw -> JSON
     "id":4,
     "name":"Bandage",
     "price":67.76,
-    "backup":true,
-    "depot":2
+    "backup":true
 }
 
 Get articles

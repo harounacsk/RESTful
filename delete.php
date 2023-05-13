@@ -9,7 +9,7 @@ include 'database.php';
 $db = new Database();
 $data = json_decode(file_get_contents("php://input"));
 $id=$data->id;
-$result = $db->delete('article', "id='$id'");
+$result = $db->delete($id);
 $db->close();
 
 if ($result) {

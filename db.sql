@@ -5,6 +5,5 @@ CREATE TABLE IF NOT EXISTS article(
     name varchar(50),
     price float,
     backup boolean,
-    depot_id INT,
     PRIMARY KEY(id)
-    );
+);

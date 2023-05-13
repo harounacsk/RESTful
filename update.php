@@ -5,19 +5,18 @@ header("Access-Control-Allow-Methods: PUT");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-include 'database.php';
+require_once 'database.php';
+require_once 'article.php';
 
 $db = new Database();
 $data = json_decode(file_get_contents("php://input"));
-$name = $data->name;
-$price = $data->price;
-$backup = $data->backup;
-$depot_id = $data->depot;
+$article = new Article();
+$article->setName($data->name)->setPrice($data->price)->setBackup($data->backup);
 $id = $data->id;
 
-$result= $db->update('article', [
-    'name' => $name, 'price' => $price, 'backup' => $backup, 'depot_id' => $depot_id
-], "id='$id'");
+$result = $db->update($article, $id);
+$db->close();
+
 if ($result) {
     echo "Updated !!!";
 }

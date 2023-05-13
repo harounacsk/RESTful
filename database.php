@@ -12,40 +12,51 @@
         }
 
 
-        public function insert($table,$para=array()){
-            $table_columns = implode(',', array_keys($para));
-            $table_value = implode("','", $para);
-            $sql="INSERT INTO $table($table_columns) VALUES('$table_value')";
-            return $this->mysqli->query($sql);
+        public function insert(Article $article){
+            
+            $sql="INSERT INTO article(name,price,backup) VALUES(?,?,?)";
+            $stmt = $this->mysqli->prepare($sql);
+            $stmt->bind_param("sdi", $article->getName(),$article->getPrice(),intval($article->isBackup()));
+            $stmt->execute();
         }
 
 
-        public function update($table,$para=array(),$id){
-            $args = array();
-            foreach ($para as $key => $value) {
-                $args[] = "$key = '$value'"; 
+        public function update(Article $article,$id){
+           $sql="UPDATE article SET name = ?, price = ?, backup = ?  WHERE id = ?";
+           $stmt = $this->mysqli->prepare($sql);
+           $stmt->bind_param("sdii", $article->getName(),$article->getPrice(),$article->isBackup(),$id);
+           return $stmt->execute();
+        }
+
+
+        public function delete($id){
+            if($this->getArticleById($id)){
+                $sql="DELETE FROM article  WHERE id=? ";
+                $stmt = $this->mysqli->prepare($sql);
+                $stmt->bind_param("i",$id);            
+                return $stmt->execute();
             }
-
-            $sql="UPDATE  $table SET " . implode(',', $args);
-            $sql .=" WHERE $id";
-            return $this->mysqli->query($sql);
+            return false;
         }
 
-
-        public function delete($table,$id){
-            $sql="DELETE FROM $table";
-            $sql .=" WHERE $id ";
-            return $this->mysqli->query($sql);
+        public function select(){
+            $sql="SELECT * FROM article";
+            $stmt = $this->mysqli->prepare($sql);
+            $stmt->execute();
+            $result= $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
         }
 
-        public function select($table){
-            $sql="SELECT * FROM $table";
-            return $this->mysqli->query($sql);
+        public function getArticleById($id){
+            $sql="SELECT * FROM article WHERE id=?";
+            $stmt = $this->mysqli->prepare($sql);
+            $stmt->bind_param("i",$id);            
+            $stmt->execute();
+            $result= $stmt->get_result();
+            return $result->fetch_assoc();
         }
 
         public function close(){
             $this->mysqli->close();
         }
     }
-
-?>

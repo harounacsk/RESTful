@@ -5,11 +5,10 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-include 'database.php';
+require_once 'database.php';
+require_once 'article.php';
 $db = new Database();
-
-$result = $db->select("article","*");
-$rows = $result->fetch_all(MYSQLI_ASSOC);
+$rows = $db->select("article");
 $db->close();
 echo json_encode($rows);
 
