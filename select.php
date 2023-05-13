@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 require_once 'database.php';
 require_once 'article.php';
 $db = new Database();
-$rows = $db->select("article");
+$rows = $db->select();
 $db->close();
 echo json_encode($rows);
 
