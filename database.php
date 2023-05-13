@@ -13,7 +13,6 @@
 
 
         public function insert(Article $article){
-            
             $sql="INSERT INTO article(name,price,backup) VALUES(?,?,?)";
             $stmt = $this->mysqli->prepare($sql);
             $stmt->bind_param("sdi", $article->getName(),$article->getPrice(),intval($article->isBackup()));
