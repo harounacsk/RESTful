@@ -16,5 +16,5 @@ $result = $db->insert($article);
 $db->close();
 
 if ($result) {
-    echo "Added !!!". $article->getName();
+    echo "Added !!!";
 }
