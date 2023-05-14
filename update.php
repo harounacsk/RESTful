@@ -15,7 +15,6 @@ $article->setName($data->name)->setPrice($data->price)->setBackup($data->backup)
 $id = $data->id;
 
 $result = $db->update($article, $id);
-$db->close();
 
 if ($result) {
     echo "Updated !!!";

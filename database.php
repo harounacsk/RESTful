@@ -2,24 +2,36 @@
 
 class Database
 {
-    private $host = 'localhost';
-    private $username = 'hrn';
-    private $password = 'my_pass';
-    private $dbname = 'testDB';
-    private $mysqli = '';
+    private string $host = "localhost";
+    private $dbname = "testdb";
+    private $username = "hrn";
+    private $password = "my_pass";
+    private  PDO  $connection;
+    private int $port=3306;
 
     public function __construct()
     {
-        $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->dbname);
-    }
+        try {
+            $this->connection = new PDO("mysql:host=$this->host;port=$this->port;dbname=$this->dbname", $this->username, $this->password);
+            if ($this->connection) {
+                return $this->connection;
+            }
+        } catch (PDOException $e) {
+            $this->connection = null;
+            echo $e->getMessage();
+            die();
+        }
+    }    
 
 
     public function insert(Article $article)
     {
         $data = $this->getData($article);
-        $sql = "INSERT INTO article(name,price,backup) VALUES(?,?,?)";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("sdi", $data["name"], $data["price"], $data["backup"]);
+        $sql = "INSERT INTO article(name,price,backup) VALUES(:name,:price,:backup)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':name',$data["name"],PDO::PARAM_STR);
+        $stmt->bindParam(':price',$data["price"],PDO::PARAM_STR);
+        $stmt->bindParam(':backup',$data["backup"],PDO::PARAM_BOOL);
         return $stmt->execute();
     }
 
@@ -27,9 +39,13 @@ class Database
     public function update(Article $article, $id)
     {
         $data = $this->getData($article);
-        $sql = "UPDATE article SET name = ?, price = ?, backup = ?  WHERE id = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("sdii", $data["name"], $data["price"], $data["backup"], $id);
+        $sql = "UPDATE article SET name = :name, price = :price, backup = :backup  WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':name',$data["name"],PDO::PARAM_STR);
+        $stmt->bindParam(':price',$data["price"],PDO::PARAM_STR);
+        $stmt->bindParam(':backup',$data["backup"],PDO::PARAM_BOOL);  
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);        
+      
         return $stmt->execute();
     }
 
@@ -37,9 +53,9 @@ class Database
     public function delete($id)
     {
         if ($this->getArticleById($id)) {
-            $sql = "DELETE FROM article  WHERE id=? ";
-            $stmt = $this->mysqli->prepare($sql);
-            $stmt->bind_param("i", $id);
+            $sql = "DELETE FROM article  WHERE id=:id ";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':id', $id,PDO::PARAM_STR);
             return $stmt->execute();
         }
         return false;
@@ -48,20 +64,18 @@ class Database
     public function select()
     {
         $sql = "SELECT * FROM article";
-        $stmt = $this->mysqli->prepare($sql);
+        $stmt = $this->connection->prepare($sql);
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function getArticleById($id)
     {
-        $sql = "SELECT * FROM article WHERE id=?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("i", $id);
+        $sql = "SELECT * FROM article WHERE id=:id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam("id", $id,PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        return $stmt->fetch();
     }
 
     private function getData(Article $article)
@@ -73,8 +87,8 @@ class Database
         ];
     }
 
-    public function close()
-    {
-        $this->mysqli->close();
+    public function close(){
+        $this->connection=null;
     }
+
 }
