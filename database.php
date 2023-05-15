@@ -3,10 +3,10 @@
 class Database
 {
     private string $host = "localhost";
-    private $dbname = "testdb";
-    private $username = "hrn";
-    private $password = "my_pass";
-    private  PDO  $connection;
+    private string $dbname = "testdb";
+    private string $username = "hrn";
+    private string $password = "my_pass";
+    private ? PDO  $connection;
     private int $port=3306;
 
     public function __construct()

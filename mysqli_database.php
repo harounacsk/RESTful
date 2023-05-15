@@ -2,10 +2,10 @@
 
 class Database
 {
-    private $host = 'localhost';
-    private $username = 'hrn';
-    private $password = 'my_pass';
-    private $dbname = 'testDB';
+    private string $host = 'localhost';
+    private string $username = 'hrn';
+    private string $password = 'my_pass';
+    private string $dbname = 'testDB';
     private mysqli $mysqli ;
 
     public function __construct()
