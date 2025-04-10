@@ -59,8 +59,11 @@ function curl_put($id, $name, $price, $backup)
  */
 
 $result = curl_get();
-foreach ($result as $res) {
-	echo $res->id . " " . $res->name . " " . $res->price . "<br/>";
-}
+if($result){
+	foreach ($result as $res) {
+		echo $res->id . " " . $res->name . " " . $res->price . "<br/>";
+	}
+}else
+	echo "Momentan gibt es keine Artikel";
 
 ?>
